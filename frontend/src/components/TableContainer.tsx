@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { loadData, ProcessedData } from './loadData';
+import { loadData, ProcessedData } from '../loadData';
 
 export const TableContainer = () => {
   const [tableRows, setTableRows] = useState<ProcessedData[]>([]);
