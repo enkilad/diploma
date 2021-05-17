@@ -1,15 +1,13 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
 
-interface IDocument {
-  id: number;
+interface IFile extends Document {
   name: string;
   classification?: string;
   category?: string;
 }
 
-const DocumentSchema: Schema = new Schema(
+const FileSchema: Schema = new Schema(
   {
-    id: { type: Number, required: true },
     name: { type: String, required: true },
     classification: { type: String, required: false },
     category: { type: String, required: false },
@@ -19,4 +17,4 @@ const DocumentSchema: Schema = new Schema(
   }
 );
 
-export const Document = mongoose.model<IDocument>('Document', DocumentSchema);
+export const File = mongoose.model<IFile>('File', FileSchema);

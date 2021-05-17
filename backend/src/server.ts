@@ -1,10 +1,10 @@
 import http from 'http';
-import bodyParser from 'body-parser';
 import express from 'express';
 import mongoose from 'mongoose';
 import config from './config/config';
 import mongo from './config/mongo';
-import documentRoute from './routes/route';
+import fileRoute from './routes/file';
+import multerRoute from './routes/multer';
 import cors from 'cors';
 
 const NAMESPACE = 'Server';
@@ -31,17 +31,18 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(express.static('../public'));
 app.use(cors());
 /** Parse the body of the request */
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.urlencoded({ limit: '100mb', extended: true }));
+app.use(express.json({ limit: '100mb' }));
 
 /** Rules of our API */
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header(
     'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization',
   );
 
   if (req.method == 'OPTIONS') {
@@ -53,7 +54,8 @@ app.use((req, res, next) => {
 });
 
 /** Routes go here */
-app.use('/api', documentRoute);
+app.use('/api', fileRoute);
+app.use('/api', multerRoute);
 
 /** Error handling */
 app.use((req, res, next) => {

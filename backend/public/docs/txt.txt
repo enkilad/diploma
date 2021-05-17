@@ -1,4 +1,5 @@
 How to Make a Text File
+русский
 
 There are many kinds of files on a computer. You can see DOC files, RTF files, EXE files, GIFs, JPGs, and many others. Each of these files was created by an application which knew how to read the file and process its contents.
 
