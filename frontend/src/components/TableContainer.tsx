@@ -2,14 +2,12 @@ import React, { useEffect, useState } from 'react';
 // import { loadData, ProcessedData } from '../loadData';
 
 export const TableContainer = () => {
-  const [files, setFiles] = useState<any>([]);
-  console.log(`files`, files);
+  const [files, setFiles] = useState<any>();
   // const [tableRows, setTableRows] = useState<ProcessedData[]>([]);
 
   useEffect(() => {
     const load = async () => {
       // const data = await loadData();
-
       // setTableRows(data);
     };
 
@@ -20,28 +18,26 @@ export const TableContainer = () => {
     const fileArr = e.target.files;
     console.log(`fileArr`, fileArr);
 
-    setFiles(fileArr);
+    if (!fileArr) return;
+
+    const formData = new FormData();
+
+    for (let i = 0; i < fileArr.length; i++) {
+      console.log(`i`, i);
+      formData.append(`multiple-files`, fileArr[i]);
+    }
+
+    console.log(`formData`, [...formData]);
+
+    setFiles(formData);
   };
 
   const sendReq = async (
     e: React.MouseEvent<HTMLButtonElement> | React.FormEvent<HTMLFormElement>
   ) => {
-    e.preventDefault();
-
-    const formData = new FormData();
-
-    for (let i = 0; i < files.length; i++) {
-      console.log(`i`, i);
-      formData.append(`file[${i}]`, files[i]);
-    }
-
-    await fetch('http://localhost:8000/api/multiple-upload', {
+    await fetch('http://localhost:8000/api2/multiple-upload', {
       method: 'POST',
-      body: formData,
-      headers: {
-        // 'Content-Type': 'application/json',
-        'Content-Type': 'multipart/form-data',
-      },
+      body: files,
     }).then((result) => console.log(`result`, result));
   };
 
@@ -49,12 +45,7 @@ export const TableContainer = () => {
 
   return (
     <>
-      <form
-        // action="http://localhost:8000/api/multiple-upload"
-        onSubmit={(e) => sendReq(e)}
-        // method="post"
-        // encType="multipart/form-data"
-      >
+      <form>
         <label htmlFor="multiple-files">Файлы</label>
         <input
           id="multiple-files"
@@ -65,8 +56,8 @@ export const TableContainer = () => {
           onChange={(e) => handleInputChange(e)}
         />
         <button
-          type="submit"
-          // onClick={(e) => sendReq(e)}
+          type="button"
+          onClick={(e) => sendReq(e)}
           // disabled={files?.length < 1}
         >
           Send

@@ -55,7 +55,7 @@ app.use((req, res, next) => {
 
 /** Routes go here */
 app.use('/api', fileRoute);
-app.use('/api', multerRoute);
+app.use('/api2', multerRoute);
 
 /** Error handling */
 app.use((req, res, next) => {

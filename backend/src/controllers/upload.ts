@@ -1,10 +1,9 @@
 import { Request, Response } from 'express';
 import { uploadFilesMiddleware } from '../middlewares/upload';
+import { findClassification } from '../utils/parser';
 
 const multipleUpload = async (req: Request, res: Response) => {
   try {
-    console.log(`req.body`, req.body);
-    console.log(`req.files`, req.files);
     const result = await uploadFilesMiddleware(req, res);
     console.log('result', result);
 
@@ -12,7 +11,7 @@ const multipleUpload = async (req: Request, res: Response) => {
       return res.send(`You must select at least 1 file.`);
     }
 
-    return res.status(200).json();
+    return res.status(200).json({ message: 'Files are successfully loaded' });
   } catch (error) {
     console.log(error);
 
