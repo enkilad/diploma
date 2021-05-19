@@ -20,24 +20,34 @@ const hasPassport = (text: string) => /^\d{3}-\d{3}$/.exec(text);
 const hasINN = (text: string) => /^[\d+]{10,12}$/.exec(text);
 const hasDateOfBirth = (text: string) => /^\d\.\d\.\d$/.exec(text);
 
+const getExtension = (filename: string) => filename.match(/\.[0-9a-z]+$/i);
+
 // parser
 const findClassification = (text: string, filename: string) => {
-  let result = '';
+  let classification = '';
 
   if (hasNationality(text) || hasEthnicity(text) || hasReligion(text)) {
-    result = '1 - Специальные ПДн';
+    classification = '1 - Специальные ПДн';
   } else if (hasBiometric(text) || hasImages(text)) {
-    result = '2 - Биометрические ПДн';
-  } else if (hasEmail(text) || hasPhone(text) || hasSnils(text)) {
-    result = '3 - Общедоступные ПДн';
-  } else result = '4 - Иные ПДн';
+    classification = '2 - Биометрические ПДн';
+  } else if (
+    hasEmail(text) ||
+    hasPhone(text) ||
+    hasSnils(text) ||
+    hasPassport(text) ||
+    hasINN(text) ||
+    hasDateOfBirth(text)
+  ) {
+    classification = '3 - Общедоступные ПДн';
+  } else classification = '4 - Иные ПДн';
 
   console.log(`\nФайл:`, filename);
-  console.log(`Категория:`, result);
+  console.log(`Категория:`, classification);
 
   return {
     name: filename,
-    classification: result,
+    classification,
+    extension: getExtension(filename)![0],
   };
 };
 

@@ -1,5 +1,4 @@
 import util from 'util';
-import path from 'path';
 import multer from 'multer';
 import { Request } from 'express';
 
@@ -8,12 +7,21 @@ const storage = multer.diskStorage({
     callback(null, `${__dirname}../../../public/docs`);
   },
   filename: (req: Request, file: Express.Multer.File, callback) => {
-    // const match = ['application/vnd.openxmlformats-officedocument.wordprocessingml.document', ''];
+    const match = [
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'application/msword',
+      'application/vnd.ms-powerpoint',
+      'application/vnd.ms-excel',
+      'text/plain',
+      'application/pdf',
+    ];
 
-    // if (match.indexOf(file.mimetype) === -1) {
-    //   const message = `${file.originalname} is invalid. Only accept .txt, .doc, .docx, .xlsx, .ppt, .pptx, .pdf.`;
-    //   return callback(message as any, null as any);
-    // }
+    if (match.indexOf(file.mimetype) === -1) {
+      const message = `${file.originalname} is invalid. Only accept .txt, .doc, .docx, .xlsx, .ppt, .pptx, .pdf.`;
+      return callback(message as any, null as any);
+    }
 
     const filename = file.originalname;
     callback(null, Date.now() + '-' + filename);

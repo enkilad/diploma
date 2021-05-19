@@ -7,6 +7,7 @@ export const TableContainer = () => {
 
   useEffect(() => {
     const load = async () => {
+      // make request after files are uploaded to backend
       // const data = await loadData();
       // setTableRows(data);
     };
@@ -35,7 +36,7 @@ export const TableContainer = () => {
   const sendReq = async (
     e: React.MouseEvent<HTMLButtonElement> | React.FormEvent<HTMLFormElement>
   ) => {
-    await fetch('http://localhost:8000/api2/multiple-upload', {
+    await fetch('http://localhost:8000/api/multiple-upload', {
       method: 'POST',
       body: files,
     }).then((result) => console.log(`result`, result));

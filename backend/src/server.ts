@@ -3,7 +3,6 @@ import express from 'express';
 import mongoose from 'mongoose';
 import config from './config/config';
 import mongo from './config/mongo';
-import fileRoute from './routes/file';
 import multerRoute from './routes/multer';
 import cors from 'cors';
 
@@ -54,8 +53,8 @@ app.use((req, res, next) => {
 });
 
 /** Routes go here */
-app.use('/api', fileRoute);
-app.use('/api2', multerRoute);
+// app.use('/api', getFilesRoute);
+app.use('/api', multerRoute);
 
 /** Error handling */
 app.use((req, res, next) => {
