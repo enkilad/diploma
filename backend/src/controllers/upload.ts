@@ -1,35 +1,19 @@
 import { Request, Response } from 'express';
 import { uploadFilesMiddleware } from '../middlewares/upload';
-import { readParseSaveFiles } from '../middlewares/readParseSaveFiles';
-import fs from 'fs';
-import path from 'path';
-
-const folderPath = `${__dirname}../../../public/docs`;
+import { readParseSaveFilesMiddleware } from '../middlewares/readParseSaveFiles';
 
 const multipleUpload = async (req: Request, res: Response) => {
-  // delete all files that have been uploaded recently
-  fs.readdir(folderPath, (err, files) => {
-    if (err) throw err;
-
-    for (const file of files) {
-      fs.unlink(path.join(folderPath, file), (err) => {
-        if (err) throw err;
-      });
-    }
-  });
-
   try {
     await uploadFilesMiddleware(req, res);
 
-    if (req.files.length <= 0) {
-      return res
-        .status(200)
-        .json({ message: 'You must select at least 1 file.' });
-    }
+    await readParseSaveFilesMiddleware(req.files as any).then((data) => {
+      const q = Promise.resolve(data);
+      console.log(`q`, q);
+      res.status(200).send('asd');
+    });
+    // console.log(`result`, result?.parsedFiles);
 
-    readParseSaveFiles();
-
-    return res.status(200).json({ message: 'Files are successfully loaded' });
+    // return res.status(200).send(result?.parsedFiles);
   } catch (error) {
     console.log(error);
 

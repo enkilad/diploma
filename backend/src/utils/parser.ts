@@ -1,4 +1,4 @@
-import { EMAIL_REGEX, PHONE_REGEX } from '../core/constants';
+import { EMAIL_REGEX, PHONE_REGEX } from '../config/constants';
 
 // 1 ПДн
 const hasNationality = (text: string) => /русский | татарин/.exec(text);
@@ -23,7 +23,7 @@ const hasDateOfBirth = (text: string) => /^\d\.\d\.\d$/.exec(text);
 const getExtension = (filename: string) => filename.match(/\.[0-9a-z]+$/i);
 
 // parser
-const findClassification = (text: string, filename: string) => {
+const findClassification = (text: string, originalname: string) => {
   let classification = '';
 
   if (hasNationality(text) || hasEthnicity(text) || hasReligion(text)) {
@@ -41,13 +41,13 @@ const findClassification = (text: string, filename: string) => {
     classification = '3 - Общедоступные ПДн';
   } else classification = '4 - Иные ПДн';
 
-  console.log(`\nФайл:`, filename);
+  console.log(`\nФайл:`, originalname);
   console.log(`Категория:`, classification);
 
   return {
-    name: filename,
+    name: originalname,
     classification,
-    extension: getExtension(filename)![0],
+    extension: getExtension(originalname)![0],
   };
 };
 

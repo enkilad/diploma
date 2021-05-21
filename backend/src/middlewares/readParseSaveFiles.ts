@@ -1,42 +1,50 @@
-import { File } from '../models/file';
+import { File, IFileParsed } from '../models/file';
+import util from 'util';
 import mongoose from 'mongoose';
-import fs from 'fs';
 import textract from 'textract';
 import { findClassification } from '../utils/parser';
+import { saveFile } from '../services/file.service';
 
-const readParseSaveFiles = () => {
-  const folderPath = `${__dirname}../../../public/docs`;
+export interface IFile {
+  fieldname: string;
+  originalname: string;
+  encoding: BufferEncoding;
+  mimetype: MimeType;
+  buffer: Buffer;
+  size: number;
+}
 
-  fs.readdir(folderPath, 'utf8', (err, data) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    // read every file and show its text to console
-    data.map((file) => {
-      textract.fromFileWithPath(`${folderPath}/${file}`, async (err, text) => {
-        if (err) console.log(`err`, err);
+const readParseSaveFiles = (files: IFile[]) => {
+  // const parsedFiles: IFileParsed[] = [];
 
-        const { name, classification, extension } = findClassification(
-          text,
-          file
-        );
+  const a = files.map(async (file: IFile) => {
+    const { originalname, buffer } = file;
 
-        const obj = new File({
-          _id: new mongoose.Types.ObjectId(),
-          name,
-          classification,
-          extension,
-        });
+    textract.fromBufferWithName(originalname, buffer, async (err, text) => {
+      if (err) console.log(`err`, err);
 
-        try {
-          await obj.save();
-        } catch (error) {
-          console.log(`error`, error);
-        }
+      const { name, classification, extension } = findClassification(
+        text,
+        originalname
+      );
+
+      const obj = new File({
+        _id: new mongoose.Types.ObjectId(),
+        file: buffer,
+        name,
+        classification,
+        extension,
       });
+
+      saveFile(obj);
+      // parsedFiles.push(obj);
     });
   });
+  console.log(`a`, a)
+  return a;
+  // console.log(`parsedFiles`, parsedFiles);
+  // return parsedFiles;
 };
 
-export { readParseSaveFiles };
+const readParseSaveFilesMiddleware = util.promisify(readParseSaveFiles);
+export { readParseSaveFilesMiddleware };
