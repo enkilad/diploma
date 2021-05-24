@@ -39,7 +39,9 @@ const findClassification = (text: string, originalname: string) => {
     hasDateOfBirth(text)
   ) {
     classification = '3 - Общедоступные ПДн';
-  } else classification = '4 - Иные ПДн';
+  } else if (Math.random() > 0.5) {
+    classification = '4 - Иные ПДн';
+  } else classification = '';
 
   console.log(`\nФайл:`, originalname);
   console.log(`Категория:`, classification);

@@ -5,6 +5,7 @@ import config from './config/config';
 import mongo from './config/mongo';
 import multerRoute from './routes/multer';
 import cors from 'cors';
+import classificationRoute from './routes/classification.route';
 
 const NAMESPACE = 'Server';
 const app = express();
@@ -55,6 +56,7 @@ app.use((req, res, next) => {
 /** Routes go here */
 // app.use('/api', getFilesRoute);
 app.use('/api', multerRoute);
+app.use('/api', classificationRoute);
 
 /** Error handling */
 app.use((req, res, next) => {

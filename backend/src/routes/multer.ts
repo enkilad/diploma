@@ -1,5 +1,5 @@
 import express from 'express';
-import { multipleUpload } from '../controllers/upload';
+import { multipleUpload } from '../controllers/upload.controller';
 
 const router = express.Router();
 

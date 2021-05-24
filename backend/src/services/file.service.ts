@@ -1,5 +1,6 @@
-import { Query } from 'mongoose';
-import { File, IFileParsed } from '../models/file';
+import { ObjectId } from 'mongoose';
+import { Classification, IFileParsed } from '../interfaces/file.interface';
+import { File } from '../models/file.model';
 
 export const getFiles = () => {
   try {
@@ -12,9 +13,18 @@ export const getFiles = () => {
 
 export const saveFile = (file: IFileParsed) => {
   try {
-    return File.create(file, (err, newFile) => {
-      console.log(`err`, err);
-    });
+    return File.create(file);
+  } catch (error) {
+    console.log(`error`, error);
+  }
+};
+
+export const updateFileClassification = (
+  id: ObjectId,
+  classification: Classification
+) => {
+  try {
+    return File.updateOne({ _id: id }, { classification });
   } catch (error) {
     console.log(`error`, error);
   }

@@ -1,11 +1,5 @@
-import mongoose, { Schema, Document } from 'mongoose';
-
-export interface IFileParsed extends Document {
-  file: Buffer;
-  name: string;
-  classification: string;
-  extension: string;
-}
+import mongoose, { Schema } from 'mongoose';
+import { IFileParsed } from '../interfaces/file.interface';
 
 const FileSchema: Schema = new Schema(
   {

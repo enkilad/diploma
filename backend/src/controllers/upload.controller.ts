@@ -1,19 +1,14 @@
 import { Request, Response } from 'express';
-import { uploadFilesMiddleware } from '../middlewares/upload';
-import { readParseSaveFilesMiddleware } from '../middlewares/readParseSaveFiles';
+import { uploadFilesMiddleware } from '../middlewares/upload.middleware';
+import { readParseSaveFilesMiddleware } from '../middlewares/readParseSaveFiles.middleware';
 
 const multipleUpload = async (req: Request, res: Response) => {
   try {
     await uploadFilesMiddleware(req, res);
 
-    await readParseSaveFilesMiddleware(req.files as any).then((data) => {
-      const q = Promise.resolve(data);
-      console.log(`q`, q);
-      res.status(200).send('asd');
-    });
-    // console.log(`result`, result?.parsedFiles);
-
-    // return res.status(200).send(result?.parsedFiles);
+    await readParseSaveFilesMiddleware(req.files as any).then((data) =>
+      res.status(200).send({ data })
+    );
   } catch (error) {
     console.log(error);
 
