@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import DocViewer from 'react-doc-viewer';
 import { Button, Table } from 'semantic-ui-react';
 import Select from 'react-select';
 import { IFileParsed } from '../interfaces';
@@ -24,6 +23,7 @@ export const TableContainer: React.FC<Props> = ({
   const [classification, setClassification] = useState<Record<string, string>>(
     {}
   );
+  const [disabled, setDisabled] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -46,21 +46,28 @@ export const TableContainer: React.FC<Props> = ({
   };
 
   const sendClassification = async (row: IFileParsed) => {
-    await fetch('http://localhost:8000/api/classification', {
-      method: 'PUT',
-      body: JSON.stringify({
-        id: row._id,
-        classification: classification[row._id],
-      }),
-    }).then((result) =>
-      console.log(
-        `result`,
-        result.json().then((data) => setTableRows(data))
-      )
-    );
+    setDisabled(true);
+    // await fetch('http://localhost:8000/api', {
+    //   method: 'PUT',
+    //   body: JSON.stringify({
+    //     id: row._id,
+    //     classification: classification[row._id],
+    //   }),
+    // }).then((result) =>
+    //   console.log(
+    //     `result`,
+    //     result.json().then((data) => setTableRows(data))
+    //   )
+    // );
   };
 
-  if (!tableRows.length) return <p>No data</p>;
+  if (!tableRows.length)
+    return (
+      <p style={{ marginTop: '14px' }}>
+        Загрузите файлы, дождитесь окончания их обработки, чтобы увидеть
+        классификации файлов
+      </p>
+    );
 
   return (
     <Table celled striped>
@@ -74,23 +81,34 @@ export const TableContainer: React.FC<Props> = ({
       <Table.Body>
         {tableRows?.map((row: IFileParsed) => (
           <Table.Row key={row._id}>
-            <Table.Cell selectable onClick={() => download(row)}>
+            <Table.Cell
+              selectable
+              onClick={() => download(row)}
+              style={{
+                padding: '0 11px',
+                color: '#0000FF',
+                textDecoration: 'underline',
+                cursor: 'pointer',
+              }}
+            >
               {row.name}
             </Table.Cell>
-            <Table.Cell>
-              <Select
-                options={options}
-                disabled={!!row.classification}
-                value={options.find((o) => o.value === row.classification)}
-                defaultValue={options.find(
-                  (o) => o.value === row.classification
-                )}
-                onChange={(e) =>
-                  !row.classification && handleClassificationChange(e, row)
-                }
-              />
+            <Table.Cell style={{ display: 'flex' }}>
+              <div style={{ width: '100%', marginRight: '10px' }}>
+                <Select
+                  options={options}
+                  disabled={!!row.classification}
+                  value={options.find((o) => o.value === row.classification)}
+                  defaultValue={options.find(
+                    (o) => o.value === row.classification
+                  )}
+                  onChange={(e) =>
+                    !row.classification && handleClassificationChange(e, row)
+                  }
+                />
+              </div>
               <Button
-                disabled={!!row.classification}
+                disabled={!!row.classification || disabled}
                 onClick={() => sendClassification(row)}
               >
                 Изменить
