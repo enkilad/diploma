@@ -20,17 +20,6 @@ mongoose
     console.error(error, error.message, error);
   });
 
-/** Log the request */
-app.use((req, res, next) => {
-  /** Log the req */
-
-  res.on('finish', () => {
-    /** Log the res */
-  });
-
-  next();
-});
-
 app.use(express.static('../public'));
 app.use(cors());
 /** Parse the body of the request */

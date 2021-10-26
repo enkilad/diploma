@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Form, Input } from 'semantic-ui-react';
+import { Form } from 'semantic-ui-react';
 
 interface Props {
   files: FormData;

@@ -19,12 +19,12 @@ export const saveFile = (file: IFileParsed) => {
   }
 };
 
-export const updateFileClassification = (
+export const updateFileClassification = async (
   id: ObjectId,
   classification: Classification
 ) => {
   try {
-    return File.updateOne({ _id: id }, { classification });
+    await File.updateOne({ _id: id }, { classification });
   } catch (error) {
     console.log(`error`, error);
   }

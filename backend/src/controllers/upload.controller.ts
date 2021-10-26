@@ -4,12 +4,15 @@ import { readParseSaveFilesMiddleware } from '../middlewares/readParseSaveFiles.
 
 const multipleUpload = async (req: Request, res: Response) => {
   try {
+    const start = new Date().getTime();
     await uploadFilesMiddleware(req, res);
 
     await readParseSaveFilesMiddleware(req.files as any).then((data) =>
       res.status(200).send({ data })
     );
-  } catch (error) {
+    const end = new Date().getTime();
+    console.log(`time`, (end - start) / 1000)
+  } catch (error: any | unknown) {
     console.log(error);
 
     if (error.code === 'LIMIT_UNEXPECTED_FILE') {

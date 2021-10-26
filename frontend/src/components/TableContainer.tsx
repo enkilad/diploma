@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Table } from 'semantic-ui-react';
 import Select from 'react-select';
 import { IFileParsed } from '../interfaces';
@@ -23,17 +23,8 @@ export const TableContainer: React.FC<Props> = ({
   const [classification, setClassification] = useState<Record<string, string>>(
     {}
   );
+  console.log(`classification`, classification)
   const [disabled, setDisabled] = useState(false);
-
-  useEffect(() => {
-    const load = async () => {
-      // make request after files are uploaded to backend
-      // const data = await loadData();
-      // setTableRows(data);
-    };
-
-    load();
-  }, []);
 
   const download = (row: IFileParsed) => {
     const myArr = new Uint8Array(row.file.data);
@@ -46,19 +37,20 @@ export const TableContainer: React.FC<Props> = ({
   };
 
   const sendClassification = async (row: IFileParsed) => {
-    setDisabled(true);
-    // await fetch('http://localhost:8000/api', {
-    //   method: 'PUT',
-    //   body: JSON.stringify({
-    //     id: row._id,
-    //     classification: classification[row._id],
-    //   }),
-    // }).then((result) =>
-    //   console.log(
-    //     `result`,
-    //     result.json().then((data) => setTableRows(data))
-    //   )
-    // );
+    console.log(`row`, row)
+    // setDisabled(true);
+    await fetch('http://localhost:8000/api/classification', {
+      method: 'PUT',
+      body: JSON.stringify({
+        id: row._id,
+        classification: classification[row._id],
+      }),
+    }).then((result) =>
+      console.log(
+        `result`,
+        result.json().then((data) => setTableRows(data))
+      )
+    );
   };
 
   if (!tableRows.length)

@@ -1,7 +1,8 @@
 import { EMAIL_REGEX, PHONE_REGEX } from '../config/constants';
 
 // 1 ПДн
-const hasNationality = (text: string) => /русский | татарин/.exec(text);
+const hasNationality = (text: string) =>
+  /русский | украинец | казах /.exec(text);
 const hasEthnicity = (text: string) =>
   /европеоидная | монголоидная | негроидная/.exec(text);
 const hasReligion = (text: string) =>
