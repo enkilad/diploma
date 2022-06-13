@@ -2,15 +2,14 @@ import { EMAIL_REGEX, PHONE_REGEX } from '../config/constants';
 
 // 1 ПДн
 const hasNationality = (text: string) =>
-  /русский | украинец | казах /.exec(text);
+  /русский | белорус | еврей | татарин | бурят | казах /.exec(text);
 const hasEthnicity = (text: string) =>
   /европеоидная | монголоидная | негроидная/.exec(text);
 const hasReligion = (text: string) =>
   /христианство | мусульманство | буддизм | иудаизм/.exec(text);
-// const hasPolitics = (text: string) => /a/.exec(text);
 
 // 2 ПДн
-const hasBiometric = (text: string) => /лицо | отпечаток/.exec(text);
+const hasBiometric = (text: string) => /лицо | отпечаток | сетчатка/.exec(text);
 const hasImages = (text: string) => /.*\.(gif|jpe?g|bmp|png)$/gim.exec(text);
 
 // 3 ПДн

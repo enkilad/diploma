@@ -13,6 +13,7 @@ export const FormContainer: React.FC<Props> = ({
   setTableRows,
 }) => {
   console.log(`files`, files);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const fileArr = e.target.files;
     console.log(`fileArr`, fileArr);
@@ -30,7 +31,7 @@ export const FormContainer: React.FC<Props> = ({
     setFiles(formData);
   };
 
-  const sendReq = async () => {
+  const sendRequest = async () => {
     await fetch('http://localhost:8000/api/multiple-upload', {
       method: 'POST',
       body: files,
@@ -61,7 +62,7 @@ export const FormContainer: React.FC<Props> = ({
           onChange={(e) => handleInputChange(e)}
         />
       </Form.Field>
-      <Form.Button type="button" onClick={sendReq} disabled={!files}>
+      <Form.Button type="button" onClick={sendRequest} disabled={!files}>
         Send
       </Form.Button>
     </Form>

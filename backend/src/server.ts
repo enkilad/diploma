@@ -1,10 +1,10 @@
 import http from 'http';
 import express from 'express';
 import mongoose from 'mongoose';
+import cors from 'cors';
 import config from './config/config';
 import mongo from './config/mongo';
 import multerRoute from './routes/multer';
-import cors from 'cors';
 import classificationRoute from './routes/classification.route';
 
 const NAMESPACE = 'Server';
