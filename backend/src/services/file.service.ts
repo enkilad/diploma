@@ -4,7 +4,7 @@ import { File } from '../models/file.model';
 
 export const getFiles = () => {
   try {
-    return File.find((err, files) => files);
+    return File.find({});
   } catch (error) {
     console.log(`error`, error);
     return error;
@@ -24,7 +24,11 @@ export const updateFileClassification = async (
   classification: Classification
 ) => {
   try {
-    await File.updateOne({ _id: id }, { classification });
+    return await File.findByIdAndUpdate(
+      id,
+      { classification },
+      { useFindAndModify: false, new: true }
+    );
   } catch (error) {
     console.log(`error`, error);
   }

@@ -5,12 +5,16 @@ interface Props {
   files: FormData;
   setFiles: (files: any) => void;
   setTableRows: (rows: any) => void;
+  areFilesUploading: boolean;
+  setAreFilesUploading: (b: boolean) => void;
 }
 
 export const FormContainer: React.FC<Props> = ({
   files,
   setFiles,
   setTableRows,
+  areFilesUploading,
+  setAreFilesUploading,
 }) => {
   console.log(`files`, files);
 
@@ -32,15 +36,23 @@ export const FormContainer: React.FC<Props> = ({
   };
 
   const sendRequest = async () => {
-    await fetch('http://localhost:8000/api/multiple-upload', {
-      method: 'POST',
-      body: files,
-    }).then((result) =>
-      console.log(
-        `result`,
-        result.json().then((data) => setTableRows(data.data))
-      )
-    );
+    setTableRows([]);
+    setAreFilesUploading(true);
+    try {
+      await fetch('http://localhost:8000/api/multiple-upload', {
+        method: 'POST',
+        body: files,
+      }).then((result) =>
+        console.log(
+          `result`,
+          result.json().then((data) => setTableRows(data))
+        )
+      );
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setAreFilesUploading(false);
+    }
   };
 
   return (
@@ -62,7 +74,12 @@ export const FormContainer: React.FC<Props> = ({
           onChange={(e) => handleInputChange(e)}
         />
       </Form.Field>
-      <Form.Button type="button" onClick={sendRequest} disabled={!files}>
+      <Form.Button
+        type="button"
+        onClick={sendRequest}
+        disabled={!files || areFilesUploading}
+        loading={areFilesUploading}
+      >
         Send
       </Form.Button>
     </Form>

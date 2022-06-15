@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import config from './config/config';
 import mongo from './config/mongo';
-import multerRoute from './routes/multer';
+import multerRoute from './routes/multer.route';
 import classificationRoute from './routes/classification.route';
 
 const NAMESPACE = 'Server';
@@ -20,18 +20,19 @@ mongoose
     console.error(error, error.message, error);
   });
 
-app.use(express.static('../public'));
 app.use(cors());
+app.use(express.static('../public'));
+
 /** Parse the body of the request */
-app.use(express.urlencoded({ limit: '100mb', extended: true }));
-app.use(express.json({ limit: '100mb' }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 /** Rules of our API */
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header(
     'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
   );
 
   if (req.method == 'OPTIONS') {
@@ -43,7 +44,6 @@ app.use((req, res, next) => {
 });
 
 /** Routes go here */
-// app.use('/api', getFilesRoute);
 app.use('/api', multerRoute);
 app.use('/api', classificationRoute);
 

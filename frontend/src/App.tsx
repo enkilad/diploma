@@ -7,14 +7,22 @@ import { IFileParsed } from './interfaces';
 export const App = () => {
   const [files, setFiles] = useState<FormData | any>();
   const [tableRows, setTableRows] = useState<IFileParsed[]>([]);
+  const [areFilesUploading, setAreFilesUploading] = useState<boolean>(false);
+
   return (
     <Container>
       <FormContainer
         files={files}
         setFiles={setFiles}
         setTableRows={setTableRows}
+        areFilesUploading={areFilesUploading}
+        setAreFilesUploading={setAreFilesUploading}
       />
-      <TableContainer tableRows={tableRows} setTableRows={setTableRows} />
+      <TableContainer
+        tableRows={tableRows}
+        setTableRows={setTableRows}
+        areFilesUploading={areFilesUploading}
+      />
     </Container>
   );
 };

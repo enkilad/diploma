@@ -8,10 +8,10 @@ const multipleUpload = async (req: Request, res: Response) => {
     await uploadFilesMiddleware(req, res);
 
     await readParseSaveFilesMiddleware(req.files as any).then((data) =>
-      res.status(200).send({ data })
+      res.status(200).send(data)
     );
     const end = new Date().getTime();
-    console.log(`time`, (end - start) / 1000)
+    console.log(`time`, (end - start) / 1000);
   } catch (error: any | unknown) {
     console.log(error);
 

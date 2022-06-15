@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Button, Table } from 'semantic-ui-react';
 import Select from 'react-select';
-import { IFileParsed } from '../interfaces';
 import fileSaver from 'file-saver';
+import { IFileParsed } from '../interfaces';
+import { MyLoader } from './MyLoader';
 
 interface Props {
   tableRows: IFileParsed[];
-  setTableRows: (rows: IFileParsed[]) => void;
+  setTableRows: React.Dispatch<React.SetStateAction<IFileParsed[]>>;
+  areFilesUploading: boolean;
 }
 
 const options = [
@@ -19,12 +21,14 @@ const options = [
 export const TableContainer: React.FC<Props> = ({
   tableRows,
   setTableRows,
+  areFilesUploading,
 }) => {
   const [classification, setClassification] = useState<Record<string, string>>(
     {}
   );
-  console.log(`classification`, classification)
-  const [disabled, setDisabled] = useState(false);
+  console.log(`classification`, classification);
+  const [isChangingClassification, setIsChangingClassification] =
+    useState<boolean>(false);
 
   const download = (row: IFileParsed) => {
     const myArr = new Uint8Array(row.file.data);
@@ -37,29 +41,54 @@ export const TableContainer: React.FC<Props> = ({
   };
 
   const sendClassification = async (row: IFileParsed) => {
-    console.log(`row`, row)
-    // setDisabled(true);
-    await fetch('http://localhost:8000/api/classification', {
-      method: 'PUT',
-      body: JSON.stringify({
-        id: row._id,
-        classification: classification[row._id],
-      }),
-    }).then((result) =>
-      console.log(
-        `result`,
-        result.json().then((data) => setTableRows(data))
-      )
-    );
+    console.log(`row`, row);
+    setIsChangingClassification(true);
+    try {
+      await fetch('http://localhost:8000/api/classification', {
+        headers: { 'Content-Type': 'application/json' },
+        method: 'PUT',
+        body: JSON.stringify({
+          id: row._id,
+          classification: classification[row._id],
+        }),
+      }).then((result) => {
+        console.log(
+          'result',
+          result.json().then((data) => {
+            setTableRows((prevState: IFileParsed[]) => {
+              // no mutation, create new clean arr
+              const newArr = [...prevState];
+              // find index of obj with empty classification
+              const prevObjIndex = newArr.findIndex(
+                (fileParsed) => String(fileParsed._id) === String(data._id)
+              );
+              // replace it with filled one
+              newArr[prevObjIndex] = data;
+              // update the state with new array
+              return [...newArr];
+            });
+          })
+        );
+      });
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsChangingClassification(false);
+    }
   };
 
-  if (!tableRows.length)
+  if (areFilesUploading) {
+    return <MyLoader />;
+  }
+
+  if (!tableRows.length) {
     return (
-      <p style={{ marginTop: '14px' }}>
-        Загрузите файлы, дождитесь окончания их обработки, чтобы увидеть
-        классификации файлов
+      <p style={{ padding: '11px 13px' }}>
+        Загрузите файлы и дождитесь окончания их обработки, чтобы увидеть
+        классификации
       </p>
     );
+  }
 
   return (
     <Table celled striped>
@@ -100,7 +129,8 @@ export const TableContainer: React.FC<Props> = ({
                 />
               </div>
               <Button
-                disabled={!!row.classification || disabled}
+                loading={isChangingClassification}
+                disabled={!!row.classification || isChangingClassification}
                 onClick={() => sendClassification(row)}
               >
                 Изменить
